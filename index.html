@@ -34,7 +34,41 @@
 
     <div class="container mt-5">
         <h2 class="text-center mb-4">Mobile Movie</h2>
-        <div id="videoContainer" class="row"></div>
+
+        <div class="row">
+            <?php
+            $url = "https://doodapi.com/api/folder/list?key=371853a5wg0f549e22yrh2&fld_id=1300977";
+
+            // Mengirim permintaan GET ke API
+            $response = file_get_contents($url);
+
+            // Mengecek apakah permintaan berhasil
+            if ($response === false) {
+                echo "Gagal mengambil data dari API Doodstream";
+            } else {
+                $data = json_decode($response, true);
+                // Mengecek apakah respons valid
+                if (isset($data['result']['files'])) {
+                    // Loop untuk menampilkan daftar video
+                    foreach ($data['result']['files'] as $video) {
+                        echo '<div class="col-md-6 mb-4">';
+                        echo '<div class="card">';
+                        echo '<a href="video.php?id=' . htmlspecialchars($video['file_code']) . '&title=' . urlencode($video['title']) . '">';
+                        echo '<img src="' . htmlspecialchars($video['single_img']) . '" class="card-img-top" alt="' . htmlspecialchars($video['title']) . '">';
+                        echo '</a>';
+                        echo '<div class="card-body">';
+                        echo '<h5 class="card-title"><a href="video.php?id=' . htmlspecialchars($video['file_code']) . '&title=' . urlencode($video['title']) . '">' . htmlspecialchars($video['title']) . '</a></h5>';
+                        echo '<p class="card-text">Duration: ' . htmlspecialchars($video['length']) . ' seconds</p>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo "Gagal mengambil data dari API Doodstream";
+                }
+            }
+            ?>
+        </div>
     </div>
 
     <footer class="footer mt-auto py-3 bg-dark text-white">
@@ -43,6 +77,8 @@
         </div>
     </footer>
 
-    <script src="index.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
